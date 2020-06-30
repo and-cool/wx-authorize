@@ -29,6 +29,13 @@ public class UserController {
     this.userService = userService;
   }
 
+  @GetMapping
+  @ApiOperation(value = "Get userinfo by openId.")
+  public ResultData getUserinfoByOpenId(@RequestParam String openId) {
+    ResultData resultData = userService.getUserinfoByOpenId(openId);
+    return resultData;
+  }
+
   @PostMapping(value = "/login/wx")
   @ApiOperation(value = "Get openId and sessionKey by code.")
   public ResultData sendOpenId(@RequestBody String code) {
@@ -69,6 +76,7 @@ public class UserController {
   }
 
   @PatchMapping(value = "/info")
+  @ApiOperation(value = "Update user info.")
   public ResultData updateUserInfo(@RequestBody User user) {
     ResultData resultData = userService.upgradeUserInfoByUser(user);
     return resultData;

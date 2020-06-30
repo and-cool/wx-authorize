@@ -45,6 +45,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public ResultData getUserinfoByOpenId(String openId) {
+    User user = userMapper.selectUserByOpenId(openId);
+    return new ResultData().isOk(user);
+  }
+
+  @Override
   public ResultData getUserOpenIdByCode(String code) {
 
     JSONObject result = WXAppletUserInfo.getSessionKeyOrOpenId(code, wxConfig);

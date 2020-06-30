@@ -9,6 +9,8 @@ import com.example.wechatauthorize.entity.User;
  */
 public interface UserService {
 
+  ResultData getUserinfoByOpenId(String openId);
+
   ResultData getUserOpenIdByCode(String code);
 
   ResultData saveUserInfoByEncryptedData(String encryptedData, String iv, String sessionKey);
