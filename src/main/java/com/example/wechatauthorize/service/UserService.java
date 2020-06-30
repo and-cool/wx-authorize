@@ -15,4 +15,10 @@ public interface UserService {
 
   ResultData saveUserInfoByUser(User user);
 
+  ResultData sendPhoneCaptcha(String phone);
+
+  ResultData verifyPhoneAndCaptcha(String phone, String captcha);
+
+  ResultData upgradeUserInfoByUser(User user);
+
 }

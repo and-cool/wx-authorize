@@ -15,7 +15,7 @@ public interface UserMapper {
   /**
    * openid查user
    */
-  @Select("select a.* from `user` a where open_id = #{openid}")
+  @Select("select * from `user` where open_id = #{openid}")
   User selectUserByOpenId(@Param("openid") String openid);
 
   /**
@@ -33,8 +33,17 @@ public interface UserMapper {
 
   /**
    * updateUserInfo
+   *
    * @param user 用户信息
    */
-  @Update("Update user set nick_name = #{nickName}, gender = #{gender}, country = #{country}, province = #{province}, city = #{city}, avatar_url = #{avatarUrl}, language = #{language}, update_at = now() where open_id = #{openId}")
+  @Update("update user set nick_name = #{nickName}, gender = #{gender}, country = #{country}, province = #{province}, city = #{city}, avatar_url = #{avatarUrl}, language = #{language}, update_at = now() where open_id = #{openId}")
   void updateUserInfo(User user);
+
+  /**
+   * updateUserOtherInfo
+   *
+   * @param user 用户信息
+   */
+  @Update("update user set name = #{name}, occupation = #{occupation}, address = #{address}, telephone = #{telephone}, email = #{email}, is_group_customer = #{isGroupCustomer}, update_at = now() where open_id = #{openId}")
+  void updateUserOtherInfo(User user);
 }

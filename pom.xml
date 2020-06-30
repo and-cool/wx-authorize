@@ -41,6 +41,17 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--swagger-->
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>2.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>2.9.2</version>
+    </dependency>
     <!--mysql - mybatis-->
     <dependency>
       <groupId>mysql</groupId>
@@ -57,7 +68,12 @@
       <artifactId>druid</artifactId>
       <version>1.0.29</version>
     </dependency>
-
+    <!-- springboot-redis-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+      <version>2.0.4.RELEASE</version>
+    </dependency>
     <!--微信开发-->
     <dependency>
       <groupId>com.github.binarywang</groupId>

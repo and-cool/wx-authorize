@@ -4,9 +4,14 @@ import com.example.wechatauthorize.dto.ResultData;
 import com.example.wechatauthorize.dto.SaveUserRequest;
 import com.example.wechatauthorize.entity.User;
 import com.example.wechatauthorize.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -14,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2020/6/28 8:35 下午
  */
 @RestController
-@RequestMapping("/wx/user")
+@RequestMapping("/user")
+@Api(tags = "User operator interface")
 public class UserController {
 
   private final UserService userService;
@@ -23,13 +29,15 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/login")
-  public ResultData getOpenId(@RequestBody String code) {
+  @PostMapping(value = "/login/wx")
+  @ApiOperation(value = "Get openId and sessionKey by code.")
+  public ResultData sendOpenId(@RequestBody String code) {
     ResultData resultData = userService.getUserOpenIdByCode(code);
     return resultData;
   }
 
-  @PostMapping("/save/decrypt")
+  @PostMapping(value = "/decrypt")
+  @ApiOperation(value = "Save user information by decrypting data.")
   public ResultData saveUserInfoByEncryptedData(@RequestBody SaveUserRequest saveUserRequest) {
     ResultData resultData = userService.saveUserInfoByEncryptedData(
         saveUserRequest.getEncryptedData(),
@@ -38,9 +46,31 @@ public class UserController {
     return resultData;
   }
 
-  @PostMapping("/save/info")
+  @PostMapping(value = "/info")
+  @ApiOperation(value = "Save user information")
   public ResultData saveUserInfoByUser(@RequestBody User user) {
     ResultData resultData = userService.saveUserInfoByUser(user);
+    return resultData;
+  }
+
+  @GetMapping(value = "/phone/captcha")
+  @ApiOperation(value = "Send captcha code to phone number.")
+  public ResultData sendPhoneCaptcha(@RequestParam String phone) {
+    ResultData resultData = userService.sendPhoneCaptcha(phone);
+    return resultData;
+  }
+
+  @PostMapping(value = "/login/phone")
+  @ApiOperation(value = "Log in to verify phone number and captcha.")
+  public ResultData verifyPhoneAndCaptcha(@RequestParam String phone,
+      @RequestParam String captcha) {
+    ResultData resultData = userService.verifyPhoneAndCaptcha(phone, captcha);
+    return resultData;
+  }
+
+  @PatchMapping(value = "/info")
+  public ResultData updateUserInfo(@RequestBody User user) {
+    ResultData resultData = userService.upgradeUserInfoByUser(user);
     return resultData;
   }
 }
