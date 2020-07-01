@@ -48,10 +48,12 @@ public class UserController {
   @PostMapping(value = "/decrypt")
   @ApiOperation(value = "Save user information by decrypting data.")
   public ResultData saveUserInfoByEncryptedData(@RequestBody SaveUserRequest saveUserRequest) {
+
     ResultData resultData = userService.saveUserInfoByEncryptedData(
         saveUserRequest.getEncryptedData(),
         saveUserRequest.getIv(),
-        saveUserRequest.getSessionKey());
+        saveUserRequest.getSessionKey(),
+        saveUserRequest.getOpenId());
     return resultData;
   }
 

@@ -40,6 +40,14 @@ public interface UserMapper {
   void updateUserInfo(User user);
 
   /**
+   * updateUserphoneNumber
+   *
+   * @param user 用户信息
+   */
+  @Update("update user set phone_number = #{phoneNumber}, pure_phone_number = #{purePhoneNumber}, country_code = #{countryCode}, update_at = now() where open_id = #{openId}")
+  void updateUserPhoneNumber(User user);
+
+  /**
    * updateUserOtherInfo
    *
    * @param user 用户信息

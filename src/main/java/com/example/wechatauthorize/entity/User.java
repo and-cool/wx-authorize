@@ -48,7 +48,13 @@ public class User {
   private String occupation;
 
   @ApiModelProperty(value = "13601692408", example = "【wx info】User phone")
-  private String phone;
+  private String phoneNumber;
+
+  @ApiModelProperty(value = "13601692408", example = "【wx info】User purePhoneNumber")
+  private String purePhoneNumber;
+
+  @ApiModelProperty(value = "86", example = "【wx info】User countryCode")
+  private String countryCode;
 
   @ApiModelProperty(value = "80800234", example = "User telephone")
   private String telephone;

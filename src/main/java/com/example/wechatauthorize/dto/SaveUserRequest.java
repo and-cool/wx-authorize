@@ -20,5 +20,6 @@ public class SaveUserRequest {
   private String encryptedData;
   private String iv;
   private String sessionKey;
+  private String openId;
 
 }

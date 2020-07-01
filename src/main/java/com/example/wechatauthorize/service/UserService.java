@@ -13,7 +13,7 @@ public interface UserService {
 
   ResultData getUserOpenIdByCode(String code);
 
-  ResultData saveUserInfoByEncryptedData(String encryptedData, String iv, String sessionKey);
+  ResultData saveUserInfoByEncryptedData(String encryptedData, String iv, String sessionKey, String openId);
 
   ResultData saveUserInfoByUser(User user);
 

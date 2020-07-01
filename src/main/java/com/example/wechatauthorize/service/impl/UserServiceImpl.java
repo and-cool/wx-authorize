@@ -76,21 +76,34 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResultData saveUserInfoByEncryptedData(String encryptedData, String iv,
-      String sessionKey) {
+      String sessionKey, String openId) {
     // 通过加密数据解密算法获取用户详细信息
-    JSONObject userInfo = WXAppletUserInfo.getUserInfo(encryptedData, iv, sessionKey);
-    User buildUser = User.builder()
-        .nickName((String) userInfo.get("nickName"))
-        .gender((Integer) userInfo.get("gender"))
-        .country((String) userInfo.get("country"))
-        .province((String) userInfo.get("province"))
-        .city((String) userInfo.get("city"))
-        .avatarUrl((String) userInfo.get("avatarUrl"))
-        .language((String) userInfo.get("language"))
-        .openId((String) userInfo.get("openId"))
-        .build();
-    userMapper.updateUserInfo(buildUser);
-    return new ResultData().isOk(userInfo);
+    JSONObject decryptedData = WXAppletUserInfo.getUserInfo(encryptedData, iv, sessionKey);
+    // {"phoneNumber":"18610365819","watermark":{"appid":"wx3be21ad44d8869b5","timestamp":1593583549},"purePhoneNumber":"18610365819","countryCode":"86"}
+    logger.info("userInfo ===== " + String.valueOf(decryptedData));
+    logger.info((String) decryptedData.get("phoneNumber"));
+    if ((String) decryptedData.get("phoneNumber") != null) {
+      User buildUserPhoneNumber = User.builder()
+          .phoneNumber((String) decryptedData.get("phoneNumber"))
+          .purePhoneNumber((String) decryptedData.get("purePhoneNumber"))
+          .countryCode((String) decryptedData.get("countryCode"))
+          .openId(openId).build();
+      userMapper.updateUserPhoneNumber(buildUserPhoneNumber);
+    }
+    if((String) decryptedData.get("openId") != null) {
+      User buildUser = User.builder()
+          .nickName((String) decryptedData.get("nickName"))
+          .gender((Integer) decryptedData.get("gender"))
+          .country((String) decryptedData.get("country"))
+          .province((String) decryptedData.get("province"))
+          .city((String) decryptedData.get("city"))
+          .avatarUrl((String) decryptedData.get("avatarUrl"))
+          .language((String) decryptedData.get("language"))
+          .openId(openId)
+          .build();
+      userMapper.updateUserInfo(buildUser);
+    }
+    return new ResultData().isOk(decryptedData);
   }
 
   @Override
