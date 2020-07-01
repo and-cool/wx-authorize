@@ -1,5 +1,6 @@
 package com.example.wechatauthorize.controller;
 
+import com.example.wechatauthorize.dto.GetOpenIdRequest;
 import com.example.wechatauthorize.dto.ResultData;
 import com.example.wechatauthorize.dto.SaveUserRequest;
 import com.example.wechatauthorize.entity.User;
@@ -38,8 +39,9 @@ public class UserController {
 
   @PostMapping(value = "/login/wx")
   @ApiOperation(value = "Get openId and sessionKey by code.")
-  public ResultData sendOpenId(@RequestBody String code) {
-    ResultData resultData = userService.getUserOpenIdByCode(code);
+  public ResultData sendOpenId(@RequestBody GetOpenIdRequest getOpenIdRequest) {
+    System.out.println(String.valueOf(getOpenIdRequest.getCode()));
+    ResultData resultData = userService.getUserOpenIdByCode(getOpenIdRequest.getCode());
     return resultData;
   }
 

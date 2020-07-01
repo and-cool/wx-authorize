@@ -10,9 +10,9 @@ import java.io.Serializable;
 public class ResultData<T> implements Serializable {
 
   private static final long serialVersionUID = -4577255781088498763L;
-  private static final int OK = 0;
-  private static final int FAIL = 1;
-  private static final int UNAUTHORIZED = 2;
+  private static final int OK = 200;
+  private static final int FAIL = 500;
+  private static final int UNAUTHORIZED = 403;
 
   private T data; //服务端数据
   private int code = OK; //状态码
