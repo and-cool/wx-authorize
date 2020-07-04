@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResultData getUserOpenIdByCode(String code) {
-
     JSONObject result = WXAppletUserInfo.getSessionKeyOrOpenId(code, wxConfig);
     if (result.get("errcode") != null) {
       return new ResultData(Integer.parseInt(result.get("errcode").toString()),
@@ -81,16 +80,20 @@ public class UserServiceImpl implements UserService {
     JSONObject decryptedData = WXAppletUserInfo.getUserInfo(encryptedData, iv, sessionKey);
     // {"phoneNumber":"18610365819","watermark":{"appid":"wx3be21ad44d8869b5","timestamp":1593583549},"purePhoneNumber":"18610365819","countryCode":"86"}
     logger.info("userInfo ===== " + String.valueOf(decryptedData));
-    logger.info((String) decryptedData.get("phoneNumber"));
-    if ((String) decryptedData.get("phoneNumber") != null) {
+    if (null == decryptedData) {
+      return new ResultData().isFail("数据解析失败");
+    }
+    if (null != (String) decryptedData.get("phoneNumber")) {
       User buildUserPhoneNumber = User.builder()
           .phoneNumber((String) decryptedData.get("phoneNumber"))
           .purePhoneNumber((String) decryptedData.get("purePhoneNumber"))
           .countryCode((String) decryptedData.get("countryCode"))
           .openId(openId).build();
       userMapper.updateUserPhoneNumber(buildUserPhoneNumber);
+      User user = userMapper.selectUserByOpenId(openId);
+      return new ResultData().isOk(user);
     }
-    if((String) decryptedData.get("openId") != null) {
+    if (null != (String) decryptedData.get("openId")) {
       User buildUser = User.builder()
           .nickName((String) decryptedData.get("nickName"))
           .gender((Integer) decryptedData.get("gender"))
@@ -103,7 +106,7 @@ public class UserServiceImpl implements UserService {
           .build();
       userMapper.updateUserInfo(buildUser);
     }
-    return new ResultData().isOk(decryptedData);
+    return new ResultData().isFail("数据保存失败");
   }
 
   @Override
@@ -142,12 +145,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ResultData verifyPhoneAndCaptcha(String phone, String captcha) {
+  public ResultData verifyPhoneAndCaptcha(String phone, String captcha, String openId) {
+    logger.info(phone + " : " + captcha);
     if (redisUtil.hasKey(phone)) {
       String value = (String) redisUtil.get(phone);
       if (value.equals(captcha)) {
+        User user = userMapper.selectUserByOpenId(openId);
         redisUtil.del(phone);
-        return new ResultData().isOk();
+        return new ResultData().isOk(user);
       } else {
         return new ResultData().isFail("登录失败，请重试");
       }

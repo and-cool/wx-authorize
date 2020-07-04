@@ -7,20 +7,17 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author andcool
- * @date 2020/6/30 2:30 下午
+ * @date 2020/7/2 10:11 上午
  */
 @Configuration
 @Component
 @Getter
-public class SmsConfig {
+public class CookieConfig {
 
-  @Value("${sms.url}")
-  private String smsUrl;
+  @Value("${cookie.name}")
+  private String cookieName;
 
-  @Value("${sms.userId}")
-  private String smsUserId;
-
-  @Value("${sms.password}")
-  private String smsPassword;
+  @Value("${cookie.max-age}")
+  private int maxAge;
 
 }

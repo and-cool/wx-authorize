@@ -13,13 +13,14 @@ public interface UserService {
 
   ResultData getUserOpenIdByCode(String code);
 
-  ResultData saveUserInfoByEncryptedData(String encryptedData, String iv, String sessionKey, String openId);
+  ResultData saveUserInfoByEncryptedData(String encryptedData, String iv, String sessionKey,
+      String openId);
 
   ResultData saveUserInfoByUser(User user);
 
   ResultData sendPhoneCaptcha(String phone);
 
-  ResultData verifyPhoneAndCaptcha(String phone, String captcha);
+  ResultData verifyPhoneAndCaptcha(String phone, String captcha, String openId);
 
   ResultData upgradeUserInfoByUser(User user);
 

@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>光大信托直播课程小程序 - 内容管理系统</title>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/global.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}" type="text/css">
+  </head>
+  <body>
+    <div class="layout-content">
+      <div class="content-header">
+        <div class="header-nav">
+          <p>光大信托直播课程小程序</p>
+        </div>
+      </div>
+      <div class="content-side side-menu">
+        <div class="side-scroll">
+          <div class="sid-logo">
+            <span>光大信托直播课程</span>
+          </div>
+          <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="sideMenu">
+            <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;">页面内容管理</a>
+              <dl class="layui-nav-child">
+                <dd><a href="javascript:;" data-id="carousel">轮播图</a></dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="content-body">
+        <div class="layui-upload">
+          <button type="button" class="layui-btn" id="uploadImage">上传图片</button>
+          <div class="layui-upload-list">
+            <p id="demoText"></p>
+          </div>
+          <div id="layer-photos">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTool"></table>
+          </div>
+        </div>
+        <div th:include="@{/commons/footer}"/>
+      </div>
+    </div>
+
+    <script th:src="@{/layui/layui.js}"></script>
+
+    <script type="text/html" id="carouselOpc">
+      <!-- 这里的 checked 的状态只是演示 -->
+      <input type="checkbox" name="isCarousel" value="{{d.id}}" title="首页轮播" lay-filter="isCarousel" {{ d.isCarousel == 1 ? 'checked' : '' }}>
+    </script>
+    <script type="text/html" id="barOpc">
+      <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/html" id="viewImage">
+      <img class="carousel-image" layer-pid="{{d.id}}" layer-src="{{d.src}}" src="{{d.src}}" alt="{{d.src}}"/>
+    </script>
+    <script>
+      layui.use(['upload', 'table'], function(){
+        const $ = layui.jquery;
+        const upload = layui.upload;
+        const table = layui.table;
+        const form = layui.form;
+        //上传图片
+        upload.render({
+          elem: '#uploadImage',
+          url: '/cms/fileUpload', //改成您自己的上传接口
+          accept: 'images',
+          size: 50000,
+          before: function(obj) {
+            obj.preview(function (index, file, result) {
+              $("#demo1").attr("src", result);
+            })
+          },
+          done: function(res){
+            console.log(res)
+            if(res.code != 200) {
+              layer.msg('上传失败，请重新上传');
+            }
+            layer.msg('上传成功');
+            table.reload('dataTable')
+          },
+          error: function(){
+            layer.msg('上传失败，请重新上传');
+          }
+        });
+
+        table.render({
+          elem: '#dataTable',
+          url:'/cms/images',
+          cellMinWidth: 80,
+          cols: [
+              [
+                {type:'numbers'},
+                {field:'src', title:'预览图', templet: "#viewImage"},
+                {field:'isCarousel', title:'轮播图', width:136, templet: '#carouselOpc', unresize: true},
+                {field:'opc', title:'操作', width: 120, toolbar: '#barOpc', unresize: true}
+            ]
+          ],
+          page: true,
+          limit:10,
+          limits: [3,5,10],
+          id: 'dataTable'
+        });
+        //监听轮播图操作
+        form.on('checkbox(isCarousel)', function(obj){
+          console.log(this.name, this.value, obj.elem.checked, JSON.stringify(this))
+          const isCarousel = obj.elem.checked ? 1 : 0;
+          $.ajax({
+            type: 'PATCH',
+            url: '/cms/image',
+            data: { id: this.value, isCarousel},
+            dataType: 'json',
+            success: function (data) {
+              if(data.code == 200) {
+                layer.msg("设置成功");
+              } else {
+                alert("设置失败，原因是：" + data.msg);
+              }
+            }
+          })
+        });
+
+        //监听工具条
+        table.on('tool(dataTool)', function(obj){
+          var data = obj.data;
+          if(obj.event === 'detail'){
+            layer.msg('ID：'+ data.id + ' 的查看操作');
+          } else if(obj.event === 'del'){
+            layer.confirm('真的删除行么', function(index){
+              $.ajax({
+                type: 'DELETE',
+                url: '/cms/image',
+                data: {id: data.id},
+                dataType: 'json',
+                success: function (data) {
+                  if(data.code == 200) {
+                    obj.del();
+                    layer.close(index);
+                    layer.msg("删除成功");
+                  } else {
+                    alert("删除失败，原因是：" + data.msg);
+                  }
+                }
+              })
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

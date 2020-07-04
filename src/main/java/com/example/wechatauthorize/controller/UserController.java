@@ -3,6 +3,7 @@ package com.example.wechatauthorize.controller;
 import com.example.wechatauthorize.dto.GetOpenIdRequest;
 import com.example.wechatauthorize.dto.ResultData;
 import com.example.wechatauthorize.dto.SaveUserRequest;
+import com.example.wechatauthorize.dto.VerifyCaptcha;
 import com.example.wechatauthorize.entity.User;
 import com.example.wechatauthorize.service.UserService;
 import io.swagger.annotations.Api;
@@ -73,9 +74,9 @@ public class UserController {
 
   @PostMapping(value = "/login/phone")
   @ApiOperation(value = "Log in to verify phone number and captcha.")
-  public ResultData verifyPhoneAndCaptcha(@RequestParam String phone,
-      @RequestParam String captcha) {
-    ResultData resultData = userService.verifyPhoneAndCaptcha(phone, captcha);
+  public ResultData verifyPhoneAndCaptcha(@RequestBody VerifyCaptcha verifyCaptcha) {
+    ResultData resultData = userService.verifyPhoneAndCaptcha(
+        verifyCaptcha.getPhone(), verifyCaptcha.getCaptcha(), verifyCaptcha.getOpenId());
     return resultData;
   }
 

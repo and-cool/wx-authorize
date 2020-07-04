@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>光大信托直播课程小程序 - 内容管理系统</title>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/global.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/login.css}" type="text/css">
+  </head>
+  <body>
+    <div class="user-content">
+      <div class="user-login-main">
+        <div class="center-header">
+          <h2>光大信托直播课程小程序</h2>
+          <p>内容管理系统</p>
+        </div>
+        <div class="user-body">
+          <form class="layui-form" action="">
+            <div class="layui-form-item form-item">
+              <label class="icon icon-username"></label>
+              <input type="text" name="username" required  lay-verify="required" placeholder="请输账号" autocomplete="off" class="layui-input form-input">
+            </div>
+            <div class="layui-form-item form-item">
+              <label class="icon icon-password"></label>
+              <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input form-input">
+            </div>
+            <div class="layui-form-item form-item">
+              <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="loginForm">立即提交</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div th:include="@{/commons/footer}"/>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script>
+      layui.use(['form', 'jquery'], function(){
+        var form = layui.form;
+        var $ = layui.jquery;
+        //监听提交
+        form.on('submit(loginForm)', function(data){
+          console.log(JSON.stringify(data.field));
+          $.ajax({
+            type: 'POST',
+            url: '/cms/login',
+            data: data.field,
+            dataType: 'json',
+            success: function (data) {
+              if(data.code == 200) {
+                location.href = "/cms/homepage";
+              } else {
+                alert("登录失败，原因是：" + data.msg);
+              }
+            }
+          })
+          return false;
+        });
+      });
+    </script>
+  </body>
+</html>
