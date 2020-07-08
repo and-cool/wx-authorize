@@ -25,8 +25,12 @@ public class CmsServiceImpl implements CmsService {
 
   private ImageMapper imageMapper;
 
-  public CmsServiceImpl(ImageMapper imageMapper) {
+  private UploadImageUtil uploadImageUtil;
+
+  public CmsServiceImpl(ImageMapper imageMapper,
+      UploadImageUtil uploadImageUtil) {
     this.imageMapper = imageMapper;
+    this.uploadImageUtil = uploadImageUtil;
   }
 
   @Override
@@ -39,7 +43,7 @@ public class CmsServiceImpl implements CmsService {
 
   @Override
   public ResultData uploadImage(MultipartFile file) {
-    String imageSrc = new UploadImageUtil().uploadSingleImage(file);
+    String imageSrc = uploadImageUtil.uploadSingleImage(file);
 
     Image image = Image.builder()
         .src(imageSrc)
@@ -65,17 +69,13 @@ public class CmsServiceImpl implements CmsService {
 
   @Override
   public ResultData deleteImage(Long id) {
-//    imageMapper.deleteImage(id);
-//    return ResultData.isOk();
-
     Image image = imageMapper.getImageById(id);
-    Boolean result = new UploadImageUtil().deleteImage(image.getSrc());
+    Boolean result = uploadImageUtil.deleteImage(image.getSrc());
     if(result) {
       imageMapper.deleteImage(id);
       return ResultData.isOk();
     }
     return ResultData.isFail();
-
   }
 
   @Override

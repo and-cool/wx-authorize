@@ -38,7 +38,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/images/**").
-        addResourceLocations("classpath:/images/");
+    registry.addResourceHandler(filePath + "/**").
+        addResourceLocations("file:" + fileRelativePath + filePath + "/");
   }
 }

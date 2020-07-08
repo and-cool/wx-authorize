@@ -4,19 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author andcool
  * @date 2020/7/4 10:03 上午
  */
+@Component
 public class UploadImageUtil {
 
   Logger log = LoggerFactory.getLogger(UploadImageUtil.class);
 
+  @Value("${file.upload.path}")
+  private String path;
+
+  @Value("${file.upload.path.relative}")
+  private String relativePath;
+
   public String uploadSingleImage(MultipartFile file) {
-    String rootDir = this.getClass().getClassLoader().getResource("").getFile();
-    File fileDir = new File(rootDir + "/images");
+    File fileDir = new File(relativePath + path);
     if (!fileDir.exists()) {
       fileDir.mkdir();
     }
@@ -29,12 +37,11 @@ public class UploadImageUtil {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return "/images/" + fileName;
+    return path + "/" + fileName;
   }
 
   public Boolean deleteImage(String src) {
-    String rootDir = this.getClass().getClassLoader().getResource("").getFile();
-    File file = new File(rootDir + src);
+    File file = new File(relativePath + src);
     if (file.exists()) {
       if(file.delete()) {
         return true;
