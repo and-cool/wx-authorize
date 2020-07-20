@@ -12,9 +12,11 @@
 }
 .header-nav {
   position: relative;
-  left: 200px;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 200px;
   background: 0 0;
-  padding: 0 10px;
+  padding: 6px 10px;
   transition: all .3s;
   color: #fff;
   border-radius: 2px;

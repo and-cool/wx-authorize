@@ -11,7 +11,7 @@
     <div class="layout-content">
       <div class="content-header">
         <div class="header-nav">
-          <p>光大信托直播课程小程序</p>
+          <button type="button" class="layui-btn" id="logout">登出</button>
         </div>
       </div>
       <div class="content-side side-menu">
@@ -50,7 +50,6 @@
       <input type="checkbox" name="isCarousel" value="{{d.id}}" title="首页轮播" lay-filter="isCarousel" {{ d.isCarousel == 1 ? 'checked' : '' }}>
     </script>
     <script type="text/html" id="barOpc">
-      <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script type="text/html" id="viewImage">
@@ -146,6 +145,21 @@
               })
             });
           }
+        });
+
+        $("#logout").click(function() {
+          $.ajax({
+            type: 'POST',
+            url: '/cms/logout',
+            dataType: 'json',
+            success: function (data) {
+              if(data.code == 200) {
+                location.href = "/cms/login";
+              } else {
+                alert("退出失败，原因是：" + data.msg);
+              }
+            }
+          })
         });
       });
     </script>

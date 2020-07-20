@@ -10,6 +10,7 @@ import com.ebtech.trust.service.UserService;
 import com.ebtech.trust.utils.GenerateCaptchaUtil;
 import com.ebtech.trust.utils.RedisUtil;
 import com.ebtech.trust.utils.SendMessageUtil;
+import com.ebtech.trust.utils.VerifyCodeUtils;
 import com.ebtech.trust.utils.WXAppletUserInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,16 +30,19 @@ public class UserServiceImpl implements UserService {
 
   private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+  @Value("${verify.code.max-age}")
+  private Integer verifyCodeMaxAge;
+
   private WxConfig wxConfig;
 
   private SmsConfig smsConfig;
 
   private UserMapper userMapper;
 
-  private RedisUtil redisUtil;
+  private VerifyCodeUtils redisUtil;
 
   public UserServiceImpl(WxConfig wxConfig, SmsConfig smsConfig,
-      UserMapper userMapper, RedisUtil redisUtil) {
+      UserMapper userMapper, VerifyCodeUtils redisUtil) {
     this.wxConfig = wxConfig;
     this.smsConfig = smsConfig;
     this.userMapper = userMapper;
@@ -138,7 +143,7 @@ public class UserServiceImpl implements UserService {
     Boolean result = SendMessageUtil.sendMsg(sendList, smsConfig);
     if (result) {
       // Store the mobile phone number and captcha in redis
-      redisUtil.set(phone, captcha, 5 * 60);
+      redisUtil.set(phone, captcha, verifyCodeMaxAge);
     }
     return new ResultData().isOk(result);
   }
@@ -156,7 +161,7 @@ public class UserServiceImpl implements UserService {
         redisUtil.del(phone);
         return new ResultData().isOk(user);
       } else {
-        return new ResultData().isFail("登录失败，请重试");
+        return new ResultData().isFail("请输入正确的验证码");
       }
     } else {
       return new ResultData().isFail("验证码已过期，请重新获取");

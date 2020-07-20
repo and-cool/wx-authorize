@@ -80,9 +80,10 @@ public class UserController {
     return resultData;
   }
 
-  @PatchMapping(value = "/info")
+  @PostMapping(value = "/info/update")
   @ApiOperation(value = "Update user info.")
   public ResultData updateUserInfo(@RequestBody User user) {
+    System.out.println(String.valueOf(user));
     ResultData resultData = userService.upgradeUserInfoByUser(user);
     return resultData;
   }

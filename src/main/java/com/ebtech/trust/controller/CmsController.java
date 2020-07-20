@@ -5,6 +5,7 @@ import com.ebtech.trust.dto.ResultData;
 import com.ebtech.trust.service.CmsService;
 import com.ebtech.trust.utils.CookieUtils;
 import io.swagger.annotations.Api;
+import java.util.Date;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +45,7 @@ public class CmsController {
   public ModelAndView login(ModelAndView mv, @PathVariable String pageName,
       HttpServletRequest request) {
     String userToken = CookieUtils.getCookieValue(request, cookieConfig.getCookieName());
-    if ("login".equals(pageName) && userToken != null) {
+    if ("login".equals(pageName) && userToken != "") {
       pageName = "homepage";
     }
     mv.setViewName(pageName);
@@ -60,12 +61,20 @@ public class CmsController {
     Boolean verifyResult = cmsService.verifyUsernameAndPassword(username, password);
     if (verifyResult) {
       String token = cookieConfig.getCookieName();
-      CookieUtils.setCookie(request, response, cookieConfig.getCookieName(), token,
+      CookieUtils.setCookie(request, response, cookieConfig.getCookieName(), String.valueOf(new Date().getTime()),
           cookieConfig.getMaxAge());
       return new ResultData().isOk("login success");
     } else {
       return new ResultData().isFail("login fail");
     }
+  }
+
+  @PostMapping(value = "/logout")
+  @ResponseBody
+  public ResultData logout(HttpServletRequest request, HttpServletResponse response) {
+    String token = cookieConfig.getCookieName();
+    CookieUtils.deleteCookie(request, response, token);
+    return new ResultData().isOk("logout success");
   }
 
   @PostMapping(value = "/fileUpload")

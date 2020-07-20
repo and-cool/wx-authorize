@@ -74,7 +74,7 @@ public class User {
   @ApiModelProperty(value = "xxxx", example = "【wx info】User session key")
   private String sessionKey;
 
-  @ApiModelProperty(value = "1", example = "User is group customer")
-  private Integer isGroupCustomer;
+  @ApiModelProperty(value = "是", example = "User is group customer")
+  private String isGroupCustomer;
 
 }
