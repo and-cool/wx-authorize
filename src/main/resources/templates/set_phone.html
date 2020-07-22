@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>光大信托直播课程小程序 - 内容管理系统</title>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/global.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/login.css}" type="text/css">
+  </head>
+  <body>
+    <div class="layout-content">
+      <div th:include="@{/commons/header}"/>
+      <div class="content-side side-menu">
+        <div th:include="@{/commons/sider}"/>
+      </div>
+      <div class="content-body" style="width: 50%; margin: auto;">
+        <div>
+          <p class="set-title">修改手机号</p>
+          <form class="layui-form">
+            <div class="layui-form-item form-item">
+              <label class="icon layui-icon-cellphone"></label>
+              <input type="text" name="phone" id="phone" required  lay-verify="required" placeholder="请输入新手机号" autocomplete="off" class="layui-input form-input">
+            </div>
+            <div class="layui-form-item form-item">
+              <div class="layui-col-xs7">
+                <label class="icon layui-icon-vercode"></label>
+                <input type="text" name="code" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input form-input">
+              </div>
+              <div class="layui-col-xs5">
+                <div style="margin-left: 10px;">
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" id="getVerifyCode">获取验证码</button>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item form-item">
+              <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="updateForm">确认修改手机号</button>
+            </div>
+          </form>
+        </div>
+        <div th:include="@{/commons/footer}"/>
+        <script th:src="@{/layui/layui.js}"></script>
+        <script>
+          layui.use(['form', 'jquery'], function() {
+            let form = layui.form;
+            let $ = layui.jquery;
+            form.on('submit(updateForm)', function (data) {
+              const {phone, code} = data.field;
+              const oldPhone = localStorage.getItem("phone");
+              if (!/\+?\d{10,}$/.test(phone)) {
+                layer.msg("手机号格式不正确！");
+              } else {
+                $.ajax({
+                  type: 'POST',
+                  url: '/cms/update/phone',
+                  data: { oldPhone, code, "newPhone": phone},
+                  dataType: 'json',
+                  success: function (data) {
+                    if (data.code == 200) {
+                      layer.msg("手机号修改成功");
+                    } else {
+                      alert("修改失败，" + data.msg);
+                    }
+                  }
+                })
+              }
+              return false;
+            })
+
+            $("#getVerifyCode").click(function () {
+              const phone = $("#phone").val();
+              let btn =$("#getVerifyCode");
+              let time = 60;
+              let timer = null;
+              if(!/\+?\d{10,}$/.test(phone)) {
+                layer.msg("手机号格式不正确！");
+              }else{
+                $.ajax({
+                  type: 'GET',
+                  url: '/cms/phone/captcha',
+                  data: {phone},
+                  dataType: 'json',
+                  success: function (data) {
+                    if(data.code == 200) {
+                      timer = setInterval(function() {
+                        btn.attr('disabled', true)
+                        btn.text(time+"秒后重新发送");
+                        time--;
+                        if(time == 0){
+                          btn.text('重新发送验证码');
+                          btn.attr('disabled', false)
+                          clearInterval(timer);
+                        }
+                      }, 1000)
+                    }else{
+                      layer.msg(data.msg);
+                    }
+                  }
+                })
+              }
+            })
+
+            $("#logout").click(function() {
+              $.ajax({
+                type: 'POST',
+                url: '/cms/logout',
+                dataType: 'json',
+                success: function (data) {
+                  if(data.code == 200) {
+                    localStorage.removeItem("phone");
+                    localStorage.removeItem("username");
+                    location.href = "/cms/login";
+                  } else {
+                    alert("退出失败，原因是：" + data.msg);
+                  }
+                }
+              })
+            });
+          })
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

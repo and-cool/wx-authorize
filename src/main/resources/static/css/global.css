@@ -32,11 +32,3 @@ body {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
 }
-
-.icon-username:before {
-  content: "\e66f";
-}
-
-.icon-password:before {
-  content: "\e673";
-}

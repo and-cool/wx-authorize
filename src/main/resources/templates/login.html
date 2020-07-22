@@ -17,15 +17,18 @@
         <div class="user-body">
           <form class="layui-form" action="">
             <div class="layui-form-item form-item">
-              <label class="icon icon-username"></label>
+              <label class="icon layui-icon-username"></label>
               <input type="text" name="username" required  lay-verify="required" placeholder="请输账号" autocomplete="off" class="layui-input form-input">
             </div>
             <div class="layui-form-item form-item">
-              <label class="icon icon-password"></label>
+              <label class="icon layui-icon-password"></label>
               <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input form-input">
             </div>
             <div class="layui-form-item form-item">
               <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="loginForm">立即登录</button>
+            </div>
+            <div class="layui-form-item form-item">
+              <a class="admin-link" href="/cms/forget">忘记密码？</a>
             </div>
           </form>
         </div>
@@ -39,17 +42,19 @@
         var $ = layui.jquery;
         //监听提交
         form.on('submit(loginForm)', function(data){
-          console.log(JSON.stringify(data.field));
           $.ajax({
             type: 'POST',
             url: '/cms/login',
             data: data.field,
             dataType: 'json',
             success: function (data) {
+              console.log(data)
               if(data.code == 200) {
+                localStorage.setItem("phone", data.data.phone);
+                localStorage.setItem("username", data.data.username);
                 location.href = "/cms/homepage";
               } else {
-                alert("登录失败，原因是：" + data.msg);
+                layer.msg("登录失败，原因是：" + data.msg);
               }
             }
           })

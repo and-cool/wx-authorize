@@ -26,7 +26,7 @@ public class CmsInterceptor implements HandlerInterceptor {
       throws Exception {
     String userToken = CookieUtils.getCookieValue(request, cookieConfig.getCookieName());
     String url = request.getRequestURL().toString();
-    if (userToken == "") {
+    if (userToken == "" || userToken == null) {
       response.sendRedirect("/cms/login?redirect=" + url);
       return false;
     } else {

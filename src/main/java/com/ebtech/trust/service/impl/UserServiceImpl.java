@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService {
           .openId(openId)
           .build();
       userMapper.updateUserInfo(buildUser);
+      return new ResultData().isOk(buildUser);
     }
     return new ResultData().isFail("数据保存失败");
   }
@@ -137,7 +138,7 @@ public class UserServiceImpl implements UserService {
     List<Map<String, Object>> sendList = new ArrayList<>();
     Map<String, Object> sendMap = new HashMap<>();
     sendMap.put("phone", phone);
-    sendMap.put("message", "【光大信托】验证码为：" + captcha + "，请勿转发，本验证码5分钟有效；");
+    sendMap.put("message", "验证码为：" + captcha + "，请勿转发，本验证码5分钟有效；");
     sendList.add(sendMap);
     // Send messages
     Boolean result = SendMessageUtil.sendMsg(sendList, smsConfig);

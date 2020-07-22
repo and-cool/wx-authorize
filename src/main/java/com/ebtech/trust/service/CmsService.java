@@ -1,6 +1,9 @@
 package com.ebtech.trust.service;
 
 import com.ebtech.trust.dto.ResultData;
+import com.ebtech.trust.dto.UpdatePasswordRequest;
+import com.ebtech.trust.dto.UpdatePhoneRequest;
+import com.ebtech.trust.entity.CmsAdmin;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +13,15 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface CmsService {
 
-  Boolean verifyUsernameAndPassword(String username, String password);
+  ResultData createCmsAdmin(CmsAdmin cmsAdmin);
+
+  ResultData verifyUsernameAndPassword(String username, String password);
+
+  ResultData sendPhoneCaptcha(String phone);
+
+  ResultData updatePassword(String phone, String code, String password);
+
+  ResultData updatePhone(String newPhone, String code, String oldPhone);
 
   ResultData uploadImage(MultipartFile file);
 

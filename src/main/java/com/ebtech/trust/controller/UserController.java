@@ -34,57 +34,50 @@ public class UserController {
   @GetMapping
   @ApiOperation(value = "Get userinfo by openId.")
   public ResultData getUserinfoByOpenId(@RequestParam String openId) {
-    ResultData resultData = userService.getUserinfoByOpenId(openId);
-    return resultData;
+    return userService.getUserinfoByOpenId(openId);
   }
 
   @PostMapping(value = "/login/wx")
   @ApiOperation(value = "Get openId and sessionKey by code.")
   public ResultData sendOpenId(@RequestBody GetOpenIdRequest getOpenIdRequest) {
     System.out.println(String.valueOf(getOpenIdRequest.getCode()));
-    ResultData resultData = userService.getUserOpenIdByCode(getOpenIdRequest.getCode());
-    return resultData;
+    return userService.getUserOpenIdByCode(getOpenIdRequest.getCode());
   }
 
   @PostMapping(value = "/decrypt")
   @ApiOperation(value = "Save user information by decrypting data.")
   public ResultData saveUserInfoByEncryptedData(@RequestBody SaveUserRequest saveUserRequest) {
 
-    ResultData resultData = userService.saveUserInfoByEncryptedData(
+    return userService.saveUserInfoByEncryptedData(
         saveUserRequest.getEncryptedData(),
         saveUserRequest.getIv(),
         saveUserRequest.getSessionKey(),
         saveUserRequest.getOpenId());
-    return resultData;
   }
 
   @PostMapping(value = "/info")
   @ApiOperation(value = "Save user information")
   public ResultData saveUserInfoByUser(@RequestBody User user) {
-    ResultData resultData = userService.saveUserInfoByUser(user);
-    return resultData;
+    return userService.saveUserInfoByUser(user);
   }
 
   @GetMapping(value = "/phone/captcha")
   @ApiOperation(value = "Send captcha code to phone number.")
   public ResultData sendPhoneCaptcha(@RequestParam String phone) {
-    ResultData resultData = userService.sendPhoneCaptcha(phone);
-    return resultData;
+    return userService.sendPhoneCaptcha(phone);
   }
 
   @PostMapping(value = "/login/phone")
   @ApiOperation(value = "Log in to verify phone number and captcha.")
   public ResultData verifyPhoneAndCaptcha(@RequestBody VerifyCaptcha verifyCaptcha) {
-    ResultData resultData = userService.verifyPhoneAndCaptcha(
+    return userService.verifyPhoneAndCaptcha(
         verifyCaptcha.getPhone(), verifyCaptcha.getCaptcha(), verifyCaptcha.getOpenId());
-    return resultData;
   }
 
   @PostMapping(value = "/info/update")
   @ApiOperation(value = "Update user info.")
   public ResultData updateUserInfo(@RequestBody User user) {
     System.out.println(String.valueOf(user));
-    ResultData resultData = userService.upgradeUserInfoByUser(user);
-    return resultData;
+    return userService.upgradeUserInfoByUser(user);
   }
 }

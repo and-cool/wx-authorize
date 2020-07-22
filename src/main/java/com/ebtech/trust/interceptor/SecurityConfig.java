@@ -32,7 +32,14 @@ public class SecurityConfig implements WebMvcConfigurer {
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(cmsInterceptor)
         .addPathPatterns("/cms/**")
-        .excludePathPatterns("/cms/login", "/cms/image/carousel");
+        .excludePathPatterns(
+            "/cms/login",
+            "/cms/forget",
+            "/cms/admin/create",
+            "/cms/phone/captcha",
+            "/cms/update/password",
+            "/cms/image/carousel"
+        );
     WebMvcConfigurer.super.addInterceptors(registry);
   }
 
