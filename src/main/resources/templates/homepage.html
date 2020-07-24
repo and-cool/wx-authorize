@@ -9,9 +9,32 @@
   </head>
   <body>
     <div class="layout-content">
-      <div th:include="@{/commons/header}"/>
+      <div class="content-header">
+        <div class="header-nav">
+          <button type="button" class="layui-btn" id="logout">登出</button>
+        </div>
+      </div>
       <div class="content-side side-menu">
-        <div th:include="@{/commons/sider}"/>
+        <div class="side-scroll">
+          <div class="sid-logo">
+            <span>光大信托直播课程</span>
+          </div>
+          <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="sideMenu">
+            <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;">页面内容管理</a>
+              <dl class="layui-nav-child">
+                <dd><a href="/cms/homepage" data-id="carousel">轮播图</a></dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;">设置</a>
+              <dl class="layui-nav-child">
+                <dd><a href="/cms/set_phone" data-id="carousel">修改手机号</a></dd>
+                <dd><a href="/cms/set_password" data-id="carousel">修改密码</a></dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="content-body">
         <div class="layui-upload">
@@ -23,7 +46,12 @@
             <table class="layui-hide" id="dataTable" lay-filter="dataTool"></table>
           </div>
         </div>
-        <div th:include="@{/commons/footer}"/>
+        <div>
+          <footer class="global-footer">
+            <p>©2020 光大信托</p>
+            <p>光大信托</p>
+          </footer>
+        </div>
       </div>
     </div>
 
@@ -120,9 +148,9 @@
                   if(data.code == 200) {
                     obj.del();
                     layer.close(index);
-                    layer.msg("删除成功");
+                    layer.msg(data.msg);
                   } else {
-                    alert("删除失败，原因是：" + data.msg);
+                    layer.msg("删除失败，原因是：" + data.msg);
                   }
                 }
               })

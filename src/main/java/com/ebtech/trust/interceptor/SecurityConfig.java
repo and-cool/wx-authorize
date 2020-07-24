@@ -25,7 +25,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   /**
    * 显示相对地址
    */
-  @Value("${file.upload.path.relative}")
+  @Value("${file.upload.relative-path}")
   private String fileRelativePath;
 
   @Override

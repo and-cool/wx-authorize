@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.ebtech.trust.dao")
-public class WechatAuthorizeApplication {
+public class EbtechTrustApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(WechatAuthorizeApplication.class, args);
+    SpringApplication.run(EbtechTrustApplication.class, args);
   }
 
 }

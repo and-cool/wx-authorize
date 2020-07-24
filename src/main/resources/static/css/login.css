@@ -19,14 +19,14 @@
   padding: 20px;
 }
 
-.user-login-header h2 {
+.center-header h2 {
   margin-bottom: 10px;
   font-weight: 300;
   font-size: 30px;
   color: #000;
 }
 
-.user-login-header p {
+.center-header p {
   font-weight: 300;
   color: #999;
 }

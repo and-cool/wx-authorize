@@ -15,19 +15,19 @@ public interface UserMapper {
   /**
    * openid查user
    */
-  @Select("select * from `user` where open_id = #{openid}")
+  @Select("select * from `t_user` where open_id = #{openid}")
   User selectUserByOpenId(@Param("openid") String openid);
 
   /**
    * 新用户插入
    */
-  @Insert("insert into user(open_id, session_key, create_at, update_at) values(#{openId}, #{sessionKey}, now(), now())")
+  @Insert("insert into `t_user` (open_id, session_key, create_at, update_at) values(#{openId}, #{sessionKey}, now(), now())")
   void insertUser(User user);
 
   /**
    * updateSessionKeyByOpenId
    */
-  @Update("update user set session_key = #{sessionKey} where open_id = #{openid}")
+  @Update("update `t_user` set session_key = #{sessionKey} where open_id = #{openid}")
   void updateSessionKeyByOpenId(@Param("openid") String openid,
       @Param("sessionKey") String sessionKey);
 
@@ -36,7 +36,7 @@ public interface UserMapper {
    *
    * @param user 用户信息
    */
-  @Update("update user set nick_name = #{nickName}, gender = #{gender}, country = #{country}, province = #{province}, city = #{city}, avatar_url = #{avatarUrl}, language = #{language}, update_at = now() where open_id = #{openId}")
+  @Update("update `t_user` set nick_name = #{nickName}, gender = #{gender}, country = #{country}, province = #{province}, city = #{city}, avatar_url = #{avatarUrl}, language = #{language}, update_at = now() where open_id = #{openId}")
   void updateUserInfo(User user);
 
   /**
@@ -44,7 +44,7 @@ public interface UserMapper {
    *
    * @param user 用户信息
    */
-  @Update("update user set phone_number = #{phoneNumber}, pure_phone_number = #{purePhoneNumber}, country_code = #{countryCode}, update_at = now() where open_id = #{openId}")
+  @Update("update `t_user` set phone_number = #{phoneNumber}, pure_phone_number = #{purePhoneNumber}, country_code = #{countryCode}, update_at = now() where open_id = #{openId}")
   void updateUserPhoneNumber(User user);
 
   /**
@@ -52,6 +52,6 @@ public interface UserMapper {
    *
    * @param user 用户信息
    */
-  @Update("update user set name = #{name}, occupation = #{occupation}, address = #{address}, telephone = #{telephone}, email = #{email}, is_group_customer = #{isGroupCustomer}, update_at = now() where open_id = #{openId}")
+  @Update("update `t_user` set name = #{name}, occupation = #{occupation}, address = #{address}, telephone = #{telephone}, email = #{email}, is_group_customer = #{isGroupCustomer}, update_at = now() where open_id = #{openId}")
   void updateUserOtherInfo(User user);
 }

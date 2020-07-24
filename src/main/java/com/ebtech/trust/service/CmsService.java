@@ -1,8 +1,6 @@
 package com.ebtech.trust.service;
 
 import com.ebtech.trust.dto.ResultData;
-import com.ebtech.trust.dto.UpdatePasswordRequest;
-import com.ebtech.trust.dto.UpdatePhoneRequest;
 import com.ebtech.trust.entity.CmsAdmin;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;

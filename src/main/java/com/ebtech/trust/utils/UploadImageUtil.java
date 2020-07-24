@@ -20,7 +20,7 @@ public class UploadImageUtil {
   @Value("${file.upload.path}")
   private String path;
 
-  @Value("${file.upload.path.relative}")
+  @Value("${file.upload.relative-path}")
   private String relativePath;
 
   public String uploadSingleImage(MultipartFile file) {

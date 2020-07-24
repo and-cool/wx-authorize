@@ -18,11 +18,6 @@ public class ResultData<T> implements Serializable {
   private int code = OK; //状态码
   private String msg = ""; //描述信息
 
-  //Constructors
-  public ResultData() {
-
-  }
-
   public ResultData(T data) {
     this.code = ResultCode.SUCCESS.getCode();
     this.msg = ResultCode.SUCCESS.getMessage();
@@ -44,6 +39,10 @@ public class ResultData<T> implements Serializable {
   public ResultData(Integer code, String msg) {
     this.code = code;
     this.msg = msg;
+  }
+
+  public ResultData() {
+
   }
 
   //APIS

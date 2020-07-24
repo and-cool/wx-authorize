@@ -2,8 +2,6 @@ package com.ebtech.trust.service.impl;
 
 import com.ebtech.trust.config.SmsConfig;
 import com.ebtech.trust.dao.CmsAdminMapper;
-import com.ebtech.trust.dto.UpdatePasswordRequest;
-import com.ebtech.trust.dto.UpdatePhoneRequest;
 import com.ebtech.trust.entity.CmsAdmin;
 import com.ebtech.trust.service.CmsService;
 import com.ebtech.trust.dao.ImageMapper;
@@ -33,12 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class CmsServiceImpl implements CmsService {
 
   Logger log = LoggerFactory.getLogger(CmsServiceImpl.class);
-
-  @Value("${admin.account}")
-  private String account;
-
-  @Value("${admin.password}")
-  private String password;
 
   @Value("${verify.code.max-age}")
   private Integer verifyCodeMaxAge;
@@ -80,9 +72,11 @@ public class CmsServiceImpl implements CmsService {
       boolean matches = EncryptPassword.matches(password, cmsAdmin.getPassword());
       if(matches) {
         return new ResultData().isOk(cmsAdmin);
+      }else{
+        return ResultData.isFail("账号或密码错误");
       }
     }
-    return ResultData.isFail();
+    return ResultData.isFail("账号或密码错误");
   }
 
   @Override
@@ -176,12 +170,12 @@ public class CmsServiceImpl implements CmsService {
   @Override
   public ResultData deleteImage(Long id) {
     Image image = imageMapper.getImageById(id);
-    Boolean result = uploadImageUtil.deleteImage(image.getSrc());
-    if(result) {
-      imageMapper.deleteImage(id);
-      return ResultData.isOk();
+    if(null == image) {
+      return ResultData.isFail("无效的照片");
     }
-    return ResultData.isFail();
+    imageMapper.deleteImage(id);
+    Boolean result = uploadImageUtil.deleteImage(image.getSrc());
+    return new ResultData().isOk("删除成功");
   }
 
   @Override

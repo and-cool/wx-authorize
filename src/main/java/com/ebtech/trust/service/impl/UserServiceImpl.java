@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public ResultData getUserinfoByOpenId(String openId) {
     User user = userMapper.selectUserByOpenId(openId);
+    user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
     return new ResultData().isOk(user);
   }
 
@@ -95,6 +96,7 @@ public class UserServiceImpl implements UserService {
           .openId(openId).build();
       userMapper.updateUserPhoneNumber(buildUserPhoneNumber);
       User user = userMapper.selectUserByOpenId(openId);
+      user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
       return new ResultData().isOk(user);
     }
     if (null != (String) decryptedData.get("openId")) {
@@ -109,7 +111,9 @@ public class UserServiceImpl implements UserService {
           .openId(openId)
           .build();
       userMapper.updateUserInfo(buildUser);
-      return new ResultData().isOk(buildUser);
+      User user = userMapper.selectUserByOpenId(openId);
+      user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
+      return new ResultData().isOk(user);
     }
     return new ResultData().isFail("数据保存失败");
   }
@@ -127,7 +131,9 @@ public class UserServiceImpl implements UserService {
         .openId(user.getOpenId())
         .build();
     userMapper.updateUserInfo(buildUser);
-    return new ResultData().isOk(buildUser);
+    User userInfo = userMapper.selectUserByOpenId(user.getOpenId());
+    userInfo.setPhoneNumber(formatPhoneNumber(userInfo.getPhoneNumber()));
+    return new ResultData().isOk(userInfo);
   }
 
   @Override
@@ -160,6 +166,7 @@ public class UserServiceImpl implements UserService {
         user.setPurePhoneNumber(phone);
         userMapper.updateUserPhoneNumber(user);
         redisUtil.del(phone);
+        user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
         return new ResultData().isOk(user);
       } else {
         return new ResultData().isFail("请输入正确的验证码");
@@ -185,5 +192,9 @@ public class UserServiceImpl implements UserService {
     User upgradeUser = userMapper.selectUserByOpenId(user.getOpenId());
     System.out.println(String.valueOf(upgradeUser));
     return new ResultData().isOk(upgradeUser);
+  }
+
+  public String formatPhoneNumber(String phone) {
+    return phone.substring(0,3) + "****" + phone.substring(7);
   }
 }

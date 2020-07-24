@@ -12,21 +12,21 @@ import org.apache.ibatis.annotations.Update;
  */
 public interface CmsAdminMapper {
 
-  @Insert("insert into cms_admin(username, password, phone) values(#{username}, #{password}, #{phone})")
+  @Insert("insert into `sys_cms_admin` (username, password, phone) values(#{username}, #{password}, #{phone})")
   void createCmsAdmin(CmsAdmin cmsAdmin);
 
-  @Select("select * from `cms_admin` where username = #{username}")
+  @Select("select * from `sys_cms_admin` where username = #{username}")
   CmsAdmin selectCmsAdminByUsername(@Param("username") String username);
 
-  @Select("select * from `cms_admin` where phone = #{phone}")
+  @Select("select * from `sys_cms_admin` where phone = #{phone}")
   CmsAdmin selectCmsAdminByPhone(@Param("phone") String phone);
 
-  @Update("update cms_admin set password = #{password} where phone = #{phone}")
+  @Update("update `sys_cms_admin` set password = #{password} where phone = #{phone}")
   void updateCmsAdminPassword(@Param("password") String password, @Param("phone") String phone);
 
-  @Update("update cms_admin set phone = #{newPhone} where phone = #{oldPhone}")
+  @Update("update `sys_cms_admin` set phone = #{newPhone} where phone = #{oldPhone}")
   void updateCmsAdminPhone(@Param("newPhone") String newPhone, @Param("oldPhone") String oldPhone);
 
-  @Update("update cms_admin set code = #{code} where phone = #{phone}")
+  @Update("update `sys_cms_admin` set code = #{code} where phone = #{phone}")
   void updateCmsAdminCode(@Param("code") String code, @Param("phone") String phone);
 }

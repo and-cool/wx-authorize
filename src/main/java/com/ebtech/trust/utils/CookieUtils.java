@@ -155,12 +155,10 @@ public final class CookieUtils {
       if (cookieMaxage > 0) {
         cookie.setMaxAge(cookieMaxage);
       }
-      if (null != request) {// 设置域名的cookie
-        String domainName = getDomainName(request);
-        if (!"localhost".equals(domainName)) {
-          cookie.setDomain(domainName);
-        }
-      }
+//      if (null != request) {// 设置域名的cookie
+//        String domainName = getDomainName(request);
+//        cookie.setDomain(domainName);
+//      }
       cookie.setPath("/");
       response.addCookie(cookie);
     } catch (Exception e) {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Configuration
 @Component
 @Getter
-public class CookieConfig {
+public class SetCookieConfig {
 
   @Value("${cookie.name}")
   private String cookieName;

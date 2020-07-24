@@ -1,7 +1,7 @@
 package com.ebtech.trust.interceptor;
 
 import com.ebtech.trust.utils.CookieUtils;
-import com.ebtech.trust.config.CookieConfig;
+import com.ebtech.trust.config.SetCookieConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -15,9 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class CmsInterceptor implements HandlerInterceptor {
 
-  private CookieConfig cookieConfig;
+  private SetCookieConfig cookieConfig;
 
-  public CmsInterceptor(CookieConfig cookieConfig) {
+  public CmsInterceptor(SetCookieConfig cookieConfig) {
     this.cookieConfig = cookieConfig;
   }
 

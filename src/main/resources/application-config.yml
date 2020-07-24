@@ -1,0 +1,62 @@
+server:
+  port: ${app.port}
+
+wx:
+  appId: ${app.appId}
+  appSecret: ${app.appSecret}
+  token: ${app.token}
+  aesKey: ${app.aesKey}
+
+# druid datasource setting
+
+
+spring:
+  datasource:
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
+    type: ${datasource.type}
+    driver-class-name: ${datasource.driver-class-name}
+  thymeleaf:
+    prefix: ${thymeleaf.prefix}
+    mode: ${thymeleaf.mode}
+    encoding: UTF-8
+    content-type: ${thymeleaf.content-type}
+  servlet:
+    multipart:
+      enabled: ${multipart.enabled}
+      max-request-size: ${multipart.max-request-size}
+      max-file-size: ${multipart.max-file-size}
+
+mybatis:
+  configuration:
+    log-impl: ${mybatis.conf.log-impl}
+    map-underscore-to-camel-case: ${mybatis.conf.map-underscore-to-camel-case}
+
+swagger:
+  enable: ${swagger.open}
+
+sms:
+  url: ${message.url}
+  userId: ${message.userId}
+  password: ${message.password}
+
+verify:
+  code:
+    max-age: ${code.max-age}
+
+cookie:
+  name: ${sys.cookie.name}
+  max-age: ${sys.cookie.max-age}
+
+file:
+  upload:
+    path: ${upload.path}
+    relative-path: ${upload.relative.path}
+
+admin:
+  phone:
+    prefix: ${phone.prefix}
+
+
+

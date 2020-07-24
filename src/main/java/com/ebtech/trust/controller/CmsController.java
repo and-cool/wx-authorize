@@ -1,9 +1,7 @@
 package com.ebtech.trust.controller;
 
-import com.ebtech.trust.config.CookieConfig;
+import com.ebtech.trust.config.SetCookieConfig;
 import com.ebtech.trust.dto.ResultData;
-import com.ebtech.trust.dto.UpdatePasswordRequest;
-import com.ebtech.trust.dto.UpdatePhoneRequest;
 import com.ebtech.trust.entity.CmsAdmin;
 import com.ebtech.trust.service.CmsService;
 import com.ebtech.trust.utils.CookieUtils;
@@ -37,10 +35,10 @@ public class CmsController {
 
   private CmsService cmsService;
 
-  private CookieConfig cookieConfig;
+  private SetCookieConfig cookieConfig;
 
   public CmsController(CmsService cmsService,
-      CookieConfig cookieConfig) {
+      SetCookieConfig cookieConfig) {
     this.cmsService = cmsService;
     this.cookieConfig = cookieConfig;
   }
