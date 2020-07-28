@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @RequestMapping("/cms")
-@Api(tags = "content management system operator interface")
+@Api(tags = "内容管理系统接口")
 public class CmsController {
 
   private CmsService cmsService;
@@ -43,6 +43,14 @@ public class CmsController {
     this.cookieConfig = cookieConfig;
   }
 
+  /**
+   * 页面视图接口.
+   *
+   * @param mv ModalAndView视图.
+   * @param pageName 页面名称.
+   * @param request  request.
+   * @return ModelAndView.
+   */
   @RequestMapping(value = "/{pageName}")
   public ModelAndView login(ModelAndView mv, @PathVariable String pageName,
       HttpServletRequest request) {
@@ -54,12 +62,27 @@ public class CmsController {
     return mv;
   }
 
+  /**
+   * 创建新管理员用户.
+   *
+   * @param cmsAdmin 管理员实体
+   * @return 200.
+   */
   @PostMapping(value = "/admin/create")
   @ResponseBody
   public ResultData insert(@RequestBody CmsAdmin cmsAdmin) {
     return cmsService.createCmsAdmin(cmsAdmin);
   }
 
+  /**
+   *  后台管理系统登录接口
+   *
+   * @param username 用户名
+   * @param password 密码
+   * @param request  request
+   * @param response response
+   * @return 200.
+   */
   @PostMapping(value = "/login",
       produces = {"application/json;charset=UTF-8"},
       consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -74,24 +97,53 @@ public class CmsController {
     return resultData;
   }
 
+  /**
+   * 获取验证码.
+   *
+   * @param phone 手机号
+   * @return 200.
+   */
   @GetMapping(value = "/phone/captcha")
   @ResponseBody
   public ResultData sendPhoneCaptcha(@RequestParam String phone) {
     return cmsService.sendPhoneCaptcha(phone);
   }
 
+  /**
+   * 后台管理系统修改密码
+   *
+   * @param phone 手机号
+   * @param code  验证码
+   * @param password 新密码
+   * @return 200
+   */
   @PostMapping(value = "/update/password")
   @ResponseBody
   public ResultData updatePassword(String phone, String code, String password) {
     return cmsService.updatePassword(phone, code, password);
   }
 
+  /**
+   * 后台管理系统修改手机号
+   *
+   * @param newPhone 新手机号
+   * @param code 验证码
+   * @param oldPhone 旧手机号
+   * @return 200
+   */
   @PostMapping(value = "/update/phone")
   @ResponseBody
   public ResultData updatePhone(String newPhone, String code, String oldPhone) {
     return cmsService.updatePhone(newPhone, code, oldPhone);
   }
 
+  /**
+   * 后台管理系统退出登录
+   *
+   * @param request HttpServletRequest
+   * @param response HttpServletResponse
+   * @return 200.
+   */
   @PostMapping(value = "/logout")
   @ResponseBody
   public ResultData logout(HttpServletRequest request, HttpServletResponse response) {
@@ -100,39 +152,76 @@ public class CmsController {
     return new ResultData().isOk("logout success");
   }
 
+  /**
+   * 上传图片接口
+   *
+   * @param file MultipartFile.
+   * @return 200.
+   */
   @PostMapping(value = "/fileUpload")
   @ResponseBody
   public ResultData fileUpload(@RequestParam(value = "file") MultipartFile file) {
-    ResultData resultData = cmsService.uploadImage(file);
-    return resultData;
+    return cmsService.uploadImage(file);
   }
 
+  /**
+   * 为小程序端提供获取轮播图的接口
+   *
+   * @return imageList
+   */
   @GetMapping(value = "/image/carousel")
   @ResponseBody
   public ResultData getImagesWithCarousel() {
-    ResultData resultData = cmsService.getCarouselImages();
-    System.out.println(resultData.getData());
-    return resultData;
+    return cmsService.getCarouselImages();
   }
 
+  /**
+   * 后台管理系统获取所有图片.
+   *
+   * @param page  页数
+   * @param limit 每页显示的条数
+   * @return imageList
+   */
   @GetMapping(value = "/images")
   @ResponseBody
   public Map<String, Object> findImageByPage(@RequestParam Long page, @RequestParam Long limit) {
-    Map<String, Object> images = cmsService.findImageByPage(page, limit);
-    return images;
+    return cmsService.findImageByPage(page, limit);
   }
 
+  /**
+   * 删除图片
+   *
+   * @param id 图片id
+   * @return 200
+   */
   @DeleteMapping(value = "/image")
   @ResponseBody
   public ResultData deleteImage(@RequestParam Long id) {
-    ResultData resultData = cmsService.deleteImage(id);
-    return resultData;
+    return cmsService.deleteImage(id);
   }
 
+  /**
+   * 修改图片状态 - 是否作为轮播图
+   * @param id 图片id
+   * @param isCarousel 是否作为轮播图 1-是 0-否
+   * @return 200
+   */
   @PatchMapping(value = "/image")
   @ResponseBody
   public ResultData updateImage(@RequestParam Long id, @RequestParam Integer isCarousel) {
-    ResultData resultData = cmsService.updateImageState(id, isCarousel);
-    return resultData;
+    return cmsService.updateImageState(id, isCarousel);
+  }
+
+  /**
+   * 修改轮播图的显示顺序
+   *
+   * @param id 图片id
+   * @param orders 排序序号
+   * @return 200
+   */
+  @PatchMapping(value = "/image/orders")
+  @ResponseBody
+  public ResultData updateImageOrders(@RequestParam Long id, @RequestParam Integer orders) {
+    return cmsService.updateImageOrders(id, orders);
   }
 }

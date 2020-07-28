@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 /**
+ * 核销验证码处理
+ *
  * @author andcool
  * @date 2020/7/20 11:38 上午
  */

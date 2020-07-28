@@ -1,6 +1,8 @@
 package com.ebtech.trust.nums;
 
 /**
+ * 请求相应Code
+ *
  * @author andcool
  * @date 2020/6/28 8:44 下午
  */

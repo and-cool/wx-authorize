@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ebtech.trust.dao.ImageMapper">
+
+  <select id="getImageById" resultType="Image">
+    select * from `sys_image` where id = #{id} order by orders
+  </select>
+
+  <select id="getCarouselImages" resultType="Image">
+    select * from `sys_image` where is_carousel = 1 order by orders
+  </select>
+
+  <select id="getImageAll" resultType="int">
+    select count(*) from `sys_image`
+  </select>
+
+  <select id="getImageByPage" resultType="Image">
+    select * from `sys_image` order by id desc limit #{page}, #{limit}
+  </select>
+
+  <insert id="insetImage">
+    insert into `sys_image` (src, orders, create_at, update_at) values(#{src}, 0, #{createAt}, #{updateAt})
+  </insert>
+
+  <delete id="deleteImage">
+    delete from `sys_image` where id = #{id}
+  </delete>
+
+  <update id="updateImage">
+    update `sys_image` set is_carousel=#{isCarousel} where id=#{id}
+  </update>
+
+  <update id="updateImageOrder">
+    update `sys_image` set orders=#{orders} where id=#{id}
+  </update>
+
+</mapper>

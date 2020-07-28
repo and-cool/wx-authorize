@@ -17,6 +17,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * 发送短信处理
+ *
  * @author andcool
  * @date 2020/6/30 2:22 下午
  */

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * 上传图片业务处理
+ *
  * @author andcool
  * @date 2020/7/4 10:03 上午
  */

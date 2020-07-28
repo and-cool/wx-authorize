@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
+ * 短信推送服务的配置信息.
+ *
  * @author andcool
  * @date 2020/6/30 2:30 下午
  */

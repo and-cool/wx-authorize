@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ebtech.trust.dao.VerifyCodeMapper">
+
+  <select id="selectVerifyCodeByPhone" resultType="VerifyCode">
+    select * from `t_verify_code` where phone = #{phone}
+  </select>
+
+  <insert id="insertVerifyCode">
+    insert into `t_verify_code` (phone, code, create_at, expire) values(#{phone}, #{code}, now(), #{expire})
+  </insert>
+
+  <update id="updateVerifyCode">
+    update `t_verify_code` set code = #{code}, create_at = now(), expire = #{expire} where phone = #{phone}
+  </update>
+
+  <delete id="deleteVerifyCode">
+    delete from `t_verify_code` where phone = #{phone}
+  </delete>
+</mapper>

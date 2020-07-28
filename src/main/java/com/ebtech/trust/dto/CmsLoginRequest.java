@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 后台管理系统登录requestBody
+ *
  * @author andcool
  * @date 2020/7/1 11:16 下午
  */

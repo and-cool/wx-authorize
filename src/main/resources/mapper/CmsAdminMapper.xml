@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ebtech.trust.dao.CmsAdminMapper">
+
+  <insert id="createCmsAdmin">
+    insert into `sys_cms_admin` (username, password, phone) values(#{username}, #{password}, #{phone})
+  </insert>
+
+  <select id="selectCmsAdminByUsername" resultType="CmsAdmin">
+    select * from `sys_cms_admin` where username = #{username}
+  </select>
+
+  <select id="selectCmsAdminByPhone" resultType="CmsAdmin">
+    select * from `sys_cms_admin` where phone = #{phone}
+  </select>
+
+  <update id="updateCmsAdminPassword">
+    update `sys_cms_admin` set password = #{password} where phone = #{phone}
+  </update>
+
+  <update id="updateCmsAdminPhone">
+    update `sys_cms_admin` set phone = #{newPhone} where phone = #{oldPhone}
+  </update>
+
+  <update id="updateCmsAdminCode">
+    update `sys_cms_admin` set code = #{code} where phone = #{phone}
+  </update>
+
+</mapper>

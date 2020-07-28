@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 验证码request
  * @author andcool
  * @date 2020/7/1 5:12 下午
  */

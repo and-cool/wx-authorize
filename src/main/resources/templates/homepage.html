@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>光大信托直播课程小程序 - 内容管理系统</title>
+    <title>光大信托财富大讲堂 - 内容管理系统</title>
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/global.css}" type="text/css">
@@ -17,7 +17,7 @@
       <div class="content-side side-menu">
         <div class="side-scroll">
           <div class="sid-logo">
-            <span>光大信托直播课程</span>
+            <span>光大信托财富大讲堂</span>
           </div>
           <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="sideMenu">
             <li class="layui-nav-item layui-nav-itemed">
@@ -48,9 +48,21 @@
         </div>
         <div>
           <footer class="global-footer">
-            <p>©2020 光大信托</p>
-            <p>光大信托</p>
+            <p>©2020 光大信托财富大讲堂</p>
+            <p>光大兴陇信托</p>
           </footer>
+        </div>
+
+
+        <div class="site-text" style="margin: 5%; display: none" id="window"  target="test123">
+          <form class="layui-form" id="book" method="post" lay-filter="example">
+            <div class="layui-form-item">
+              <label class="layui-form-label">图片顺序</label>
+              <div class="layui-input-block">
+                <input type="text" id="orders" name="orders" lay-verify="title" autocomplete="off" placeholder="请输入显示序号" class="layui-input" />
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -58,11 +70,11 @@
     <script th:src="@{/layui/layui.js}"></script>
 
     <script type="text/html" id="carouselOpc">
-      <!-- 这里的 checked 的状态只是演示 -->
-      <input type="checkbox" name="isCarousel" value="{{d.id}}" title="首页轮播" lay-filter="isCarousel" {{ d.isCarousel == 1 ? 'checked' : '' }}>
+      <input type="checkbox" name="isCarousel" value="{{d.id}}" title="首页轮播" lay-filter="isCarousel" {{ d.isCarousel == 1 ? 'checked' : '' }} >
     </script>
     <script type="text/html" id="barOpc">
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+      <a class="layui-btn layui-btn-xs" lay-event="editOrder">编辑显示顺序</a>
     </script>
     <script type="text/html" id="viewImage">
       <img class="carousel-image" layer-pid="{{d.id}}" layer-src="{{d.src}}" src="{{d.src}}" alt="{{d.src}}"/>
@@ -105,8 +117,9 @@
               [
                 {type:'numbers'},
                 {field:'src', title:'预览图', templet: "#viewImage"},
+                {field:'orders', title:'轮播图次序', width:136, unresize: true},
                 {field:'isCarousel', title:'轮播图', width:136, templet: '#carouselOpc', unresize: true},
-                {field:'opc', title:'操作', width: 120, toolbar: '#barOpc', unresize: true}
+                {field:'opc', title:'操作', width: 240, toolbar: '#barOpc', unresize: true}
             ]
           ],
           page: true,
@@ -135,6 +148,7 @@
         //监听工具条
         table.on('tool(dataTool)', function(obj){
           var data = obj.data;
+          const imageId = data.id
           if(obj.event === 'detail'){
             layer.msg('ID：'+ data.id + ' 的查看操作');
           } else if(obj.event === 'del'){
@@ -155,6 +169,48 @@
                 }
               })
             });
+          } else if(obj.event === 'editOrder') {
+            layer.open({
+              type: 1 //Page层类型
+              , skin: 'layui-layer-molv'
+              , area: ['380px', '200px']
+              , title: ['编辑轮播图次序', 'font-size:14px']
+              , btn: ['确定', '取消']
+              , shadeClose: true
+              , shade: 0
+              , id: 'layer_form' //设定一个id，防止重复弹出
+              , btnAlign: 'c'
+              , moveType: 1 //拖拽模式，0或者1
+              , maxmin: false //允许全屏最小化
+              , content: $("#window")  //弹窗路径
+              , btn: ['保存', '取消']
+              , success: function (layero, index) {
+                $('#orders').val(data.orders);
+              }
+              ,yes:function(index,layero) {
+                const orders = $('#orders').val()
+                $.ajax({
+                  type: 'PATCH',
+                  url: '/cms/image/orders',
+                  data: { id: imageId, orders },
+                  dataType: 'json',
+                  success: function (data) {
+                    if(data.code == 200) {
+                      layer.msg("修改成功");
+                      table.reload('dataTable',{//重载表格
+                        page:{
+                          curr:1
+                        }
+                      })
+                      layer.close(index);
+                    } else {
+                      alert("设置失败，原因是：" + data.msg);
+                    }
+                  }
+
+                })
+              }
+            })
           }
         });
 

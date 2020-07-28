@@ -3,12 +3,11 @@ package com.ebtech.trust.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.ebtech.trust.config.SmsConfig;
 import com.ebtech.trust.config.WxConfig;
-import com.ebtech.trust.dao.UserMapper;
+import com.ebtech.trust.dao.WxUserMapper;
 import com.ebtech.trust.dto.ResultData;
-import com.ebtech.trust.entity.User;
-import com.ebtech.trust.service.UserService;
+import com.ebtech.trust.entity.WxUser;
+import com.ebtech.trust.service.WxService;
 import com.ebtech.trust.utils.GenerateCaptchaUtil;
-import com.ebtech.trust.utils.RedisUtil;
 import com.ebtech.trust.utils.SendMessageUtil;
 import com.ebtech.trust.utils.VerifyCodeUtils;
 import com.ebtech.trust.utils.WXAppletUserInfo;
@@ -22,13 +21,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
+ * 微信用户信息管理
+ *
  * @author andcool
  * @date 2020/6/28 8:38 下午
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class WxServiceImpl implements WxService {
 
-  private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+  private Logger logger = LoggerFactory.getLogger(WxServiceImpl.class);
 
   @Value("${verify.code.max-age}")
   private Integer verifyCodeMaxAge;
@@ -37,23 +38,23 @@ public class UserServiceImpl implements UserService {
 
   private SmsConfig smsConfig;
 
-  private UserMapper userMapper;
+  private WxUserMapper wxUserMapper;
 
-  private VerifyCodeUtils redisUtil;
+  private VerifyCodeUtils verifyCodeUtils;
 
-  public UserServiceImpl(WxConfig wxConfig, SmsConfig smsConfig,
-      UserMapper userMapper, VerifyCodeUtils redisUtil) {
+  public WxServiceImpl(WxConfig wxConfig, SmsConfig smsConfig,
+      WxUserMapper wxUserMapper, VerifyCodeUtils verifyCodeUtils) {
     this.wxConfig = wxConfig;
     this.smsConfig = smsConfig;
-    this.userMapper = userMapper;
-    this.redisUtil = redisUtil;
+    this.wxUserMapper = wxUserMapper;
+    this.verifyCodeUtils = verifyCodeUtils;
   }
 
   @Override
   public ResultData getUserinfoByOpenId(String openId) {
-    User user = userMapper.selectUserByOpenId(openId);
-    user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
-    return new ResultData().isOk(user);
+    WxUser wxUser = wxUserMapper.selectUserByOpenId(openId);
+    wxUser.setPhoneNumber(formatPhoneNumber(wxUser.getPhoneNumber()));
+    return new ResultData().isOk(wxUser);
   }
 
   @Override
@@ -64,18 +65,18 @@ public class UserServiceImpl implements UserService {
           (String) result.get("errmsg"));
     }
     //查询openid是否已存入数据库
-    User user = userMapper.selectUserByOpenId((String) result.get("openid"));
-    if (user != null) {
+    WxUser wxUser = wxUserMapper.selectUserByOpenId((String) result.get("openid"));
+    if (wxUser != null) {
       //不等于空说明已经存入该openid的用户 返回前台登录成功 并存入userSession
-      userMapper.updateSessionKeyByOpenId((String) result.get("openid"),
+      wxUserMapper.updateSessionKeyByOpenId((String) result.get("openid"),
           (String) result.get("session_key"));
       return new ResultData().isOk(result);
     }
     //等于空说明已经不存在该用户，插入记录 并存入userSession，返回前台登录成功
-    user = new User();
-    user.setOpenId((String) result.get("openid"));
-    user.setSessionKey((String) result.get("session_key"));
-    userMapper.insertUser(user);
+    wxUser = new WxUser();
+    wxUser.setOpenId((String) result.get("openid"));
+    wxUser.setSessionKey((String) result.get("session_key"));
+    wxUserMapper.insertUser(wxUser);
     return new ResultData().isOk(result);
   }
 
@@ -89,18 +90,18 @@ public class UserServiceImpl implements UserService {
       return new ResultData().isFail("数据解析失败");
     }
     if (null != (String) decryptedData.get("phoneNumber")) {
-      User buildUserPhoneNumber = User.builder()
+      WxUser buildWxUserPhoneNumber = WxUser.builder()
           .phoneNumber((String) decryptedData.get("phoneNumber"))
           .purePhoneNumber((String) decryptedData.get("purePhoneNumber"))
           .countryCode((String) decryptedData.get("countryCode"))
           .openId(openId).build();
-      userMapper.updateUserPhoneNumber(buildUserPhoneNumber);
-      User user = userMapper.selectUserByOpenId(openId);
-      user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
-      return new ResultData().isOk(user);
+      wxUserMapper.updateUserPhoneNumber(buildWxUserPhoneNumber);
+      WxUser wxUser = wxUserMapper.selectUserByOpenId(openId);
+      wxUser.setPhoneNumber(formatPhoneNumber(wxUser.getPhoneNumber()));
+      return new ResultData().isOk(wxUser);
     }
     if (null != (String) decryptedData.get("openId")) {
-      User buildUser = User.builder()
+      WxUser buildWxUser = WxUser.builder()
           .nickName((String) decryptedData.get("nickName"))
           .gender((Integer) decryptedData.get("gender"))
           .country((String) decryptedData.get("country"))
@@ -110,30 +111,30 @@ public class UserServiceImpl implements UserService {
           .language((String) decryptedData.get("language"))
           .openId(openId)
           .build();
-      userMapper.updateUserInfo(buildUser);
-      User user = userMapper.selectUserByOpenId(openId);
-      user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
-      return new ResultData().isOk(user);
+      wxUserMapper.updateUserInfo(buildWxUser);
+      WxUser wxUser = wxUserMapper.selectUserByOpenId(openId);
+      wxUser.setPhoneNumber(formatPhoneNumber(wxUser.getPhoneNumber()));
+      return new ResultData().isOk(wxUser);
     }
     return new ResultData().isFail("数据保存失败");
   }
 
   @Override
-  public ResultData saveUserInfoByUser(User user) {
-    User buildUser = User.builder()
-        .nickName(user.getNickName())
-        .gender(user.getGender())
-        .country(user.getCountry())
-        .province(user.getProvince())
-        .city(user.getCity())
-        .avatarUrl(user.getAvatarUrl())
-        .language(user.getLanguage())
-        .openId(user.getOpenId())
+  public ResultData saveUserInfoByUser(WxUser wxUser) {
+    WxUser buildWxUser = WxUser.builder()
+        .nickName(wxUser.getNickName())
+        .gender(wxUser.getGender())
+        .country(wxUser.getCountry())
+        .province(wxUser.getProvince())
+        .city(wxUser.getCity())
+        .avatarUrl(wxUser.getAvatarUrl())
+        .language(wxUser.getLanguage())
+        .openId(wxUser.getOpenId())
         .build();
-    userMapper.updateUserInfo(buildUser);
-    User userInfo = userMapper.selectUserByOpenId(user.getOpenId());
-    userInfo.setPhoneNumber(formatPhoneNumber(userInfo.getPhoneNumber()));
-    return new ResultData().isOk(userInfo);
+    wxUserMapper.updateUserInfo(buildWxUser);
+    WxUser wxUserInfo = wxUserMapper.selectUserByOpenId(wxUser.getOpenId());
+    wxUserInfo.setPhoneNumber(formatPhoneNumber(wxUserInfo.getPhoneNumber()));
+    return new ResultData().isOk(wxUserInfo);
   }
 
   @Override
@@ -150,7 +151,7 @@ public class UserServiceImpl implements UserService {
     Boolean result = SendMessageUtil.sendMsg(sendList, smsConfig);
     if (result) {
       // Store the mobile phone number and captcha in redis
-      redisUtil.set(phone, captcha, verifyCodeMaxAge);
+      verifyCodeUtils.set(phone, captcha, verifyCodeMaxAge);
     }
     return new ResultData().isOk(result);
   }
@@ -158,16 +159,16 @@ public class UserServiceImpl implements UserService {
   @Override
   public ResultData verifyPhoneAndCaptcha(String phone, String captcha, String openId) {
     logger.info(phone + " : " + captcha);
-    if (redisUtil.hasKey(phone)) {
-      String value = (String) redisUtil.get(phone);
+    if (verifyCodeUtils.hasKey(phone)) {
+      String value = (String) verifyCodeUtils.get(phone);
       if (value.equals(captcha)) {
-        User user = userMapper.selectUserByOpenId(openId);
-        user.setPhoneNumber(phone);
-        user.setPurePhoneNumber(phone);
-        userMapper.updateUserPhoneNumber(user);
-        redisUtil.del(phone);
-        user.setPhoneNumber(formatPhoneNumber(user.getPhoneNumber()));
-        return new ResultData().isOk(user);
+        WxUser wxUser = wxUserMapper.selectUserByOpenId(openId);
+        wxUser.setPhoneNumber(phone);
+        wxUser.setPurePhoneNumber(phone);
+        wxUserMapper.updateUserPhoneNumber(wxUser);
+        verifyCodeUtils.del(phone);
+        wxUser.setPhoneNumber(formatPhoneNumber(wxUser.getPhoneNumber()));
+        return new ResultData().isOk(wxUser);
       } else {
         return new ResultData().isFail("请输入正确的验证码");
       }
@@ -177,24 +178,29 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ResultData upgradeUserInfoByUser(User user) {
-    User buildUser = User.builder()
-        .name(user.getName())
-        .occupation((user.getOccupation()))
-        .address(user.getAddress())
-        .telephone(user.getTelephone())
-        .email(user.getEmail())
-        .isGroupCustomer(user.getIsGroupCustomer())
-        .openId(user.getOpenId())
+  public ResultData upgradeUserInfoByUser(WxUser wxUser) {
+    WxUser buildWxUser = WxUser.builder()
+        .name(wxUser.getName())
+        .occupation((wxUser.getOccupation()))
+        .address(wxUser.getAddress())
+        .telephone(wxUser.getTelephone())
+        .email(wxUser.getEmail())
+        .isGroupCustomer(wxUser.getIsGroupCustomer())
+        .openId(wxUser.getOpenId())
         .build();
-    userMapper.updateUserOtherInfo(buildUser);
+    wxUserMapper.updateUserOtherInfo(buildWxUser);
 
-    User upgradeUser = userMapper.selectUserByOpenId(user.getOpenId());
-    System.out.println(String.valueOf(upgradeUser));
-    return new ResultData().isOk(upgradeUser);
+    WxUser upgradeWxUser = wxUserMapper.selectUserByOpenId(wxUser.getOpenId());
+    System.out.println(String.valueOf(upgradeWxUser));
+    return new ResultData().isOk(upgradeWxUser);
   }
 
   public String formatPhoneNumber(String phone) {
-    return phone.substring(0,3) + "****" + phone.substring(7);
+    try{
+      return phone.substring(0,3) + "****" + phone.substring(7);
+    }catch (Exception e) {
+      System.out.println(e.getMessage());
+      return "";
+    }
   }
 }

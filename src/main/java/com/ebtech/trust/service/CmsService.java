@@ -29,5 +29,7 @@ public interface CmsService {
 
   ResultData updateImageState(Long id, Integer isCarousel);
 
+  ResultData updateImageOrders(Long id, Integer orders);
+
   ResultData getCarouselImages();
 }

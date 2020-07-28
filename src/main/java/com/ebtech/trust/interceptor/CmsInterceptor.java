@@ -21,6 +21,15 @@ public class CmsInterceptor implements HandlerInterceptor {
     this.cookieConfig = cookieConfig;
   }
 
+  /**
+   * 对后台管理系统的请求做拦截
+   *
+   * @param request request
+   * @param response response
+   * @param handler handler
+   * @return true
+   * @throws Exception
+   */
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {

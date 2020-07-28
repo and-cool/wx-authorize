@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * 后台管理系统 业务逻辑处理
+ *
  * @author andcool
  * @date 2020/7/2 10:17 上午
  */
@@ -46,16 +48,16 @@ public class CmsServiceImpl implements CmsService {
 
   private SmsConfig smsConfig;
 
-  private VerifyCodeUtils redisUtil;
+  private VerifyCodeUtils verifyCodeUtils;
 
   public CmsServiceImpl(ImageMapper imageMapper,
       CmsAdminMapper cmsAdminMapper, UploadImageUtil uploadImageUtil,
-      SmsConfig smsConfig, VerifyCodeUtils redisUtil) {
+      SmsConfig smsConfig, VerifyCodeUtils verifyCodeUtils) {
     this.imageMapper = imageMapper;
     this.cmsAdminMapper = cmsAdminMapper;
     this.uploadImageUtil = uploadImageUtil;
     this.smsConfig = smsConfig;
-    this.redisUtil = redisUtil;
+    this.verifyCodeUtils = verifyCodeUtils;
   }
 
   @Override
@@ -93,7 +95,7 @@ public class CmsServiceImpl implements CmsService {
     Boolean result = SendMessageUtil.sendMsg(sendList, smsConfig);
     if (result) {
       // Store the mobile phone number and captcha in redis
-      redisUtil.set(adminPhonePrefix + phone, captcha, verifyCodeMaxAge);
+      verifyCodeUtils.set(adminPhonePrefix + phone, captcha, verifyCodeMaxAge);
     }
     return new ResultData().isOk(result);
   }
@@ -105,12 +107,12 @@ public class CmsServiceImpl implements CmsService {
     if(null == cmsAdmin) {
       return ResultData.isFail("查询无该账户");
     }
-    if(redisUtil.hasKey(adminPhonePrefix + cmsAdmin.getPhone())) {
-      String codeSave = (String) redisUtil.get(adminPhonePrefix + cmsAdmin.getPhone());
+    if(verifyCodeUtils.hasKey(adminPhonePrefix + cmsAdmin.getPhone())) {
+      String codeSave = (String) verifyCodeUtils.get(adminPhonePrefix + cmsAdmin.getPhone());
       if(codeSave.equals(code)) {
         cmsAdmin.setPassword(EncryptPassword.encode(password));
         cmsAdminMapper.updateCmsAdminPassword(cmsAdmin.getPassword(), cmsAdmin.getPhone());
-        redisUtil.del(adminPhonePrefix + cmsAdmin.getPhone());
+        verifyCodeUtils.del(adminPhonePrefix + cmsAdmin.getPhone());
         return new ResultData().isOk("密码修改成功");
       }else{
         return new ResultData().isFail("验证码错误");
@@ -126,12 +128,12 @@ public class CmsServiceImpl implements CmsService {
     if(null == cmsAdmin) {
       return ResultData.isFail("查询无该账户");
     }
-    if(redisUtil.hasKey(adminPhonePrefix + newPhone)) {
-      String saveCode = (String) redisUtil.get(adminPhonePrefix + newPhone);
+    if(verifyCodeUtils.hasKey(adminPhonePrefix + newPhone)) {
+      String saveCode = (String) verifyCodeUtils.get(adminPhonePrefix + newPhone);
       if(saveCode.equals(code)) {
         cmsAdmin.setPhone(newPhone);
         cmsAdminMapper.updateCmsAdminPhone(newPhone, oldPhone);
-        redisUtil.del(adminPhonePrefix + newPhone);
+        verifyCodeUtils.del(adminPhonePrefix + newPhone);
         return new ResultData().isOk("手机号修改成功");
       }else{
         return new ResultData().isFail("验证码错误");
@@ -181,6 +183,12 @@ public class CmsServiceImpl implements CmsService {
   @Override
   public ResultData updateImageState(Long id, Integer isCarousel) {
     imageMapper.updateImage(id, isCarousel);
+    return ResultData.isOk();
+  }
+
+  @Override
+  public ResultData updateImageOrders(Long id, Integer orders) {
+    imageMapper.updateImageOrder(id, orders);
     return ResultData.isOk();
   }
 

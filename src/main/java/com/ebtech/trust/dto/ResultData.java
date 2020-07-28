@@ -1,7 +1,10 @@
 package com.ebtech.trust.dto;
 
+import com.alibaba.fastjson.JSON;
 import com.ebtech.trust.nums.ResultCode;
+import com.ebtech.trust.utils.Base64Util;
 import java.io.Serializable;
+import java.util.Base64;
 
 /**
  * @author andcool
@@ -13,6 +16,9 @@ public class ResultData<T> implements Serializable {
   private static final int OK = 200;
   private static final int FAIL = 500;
   private static final int UNAUTHORIZED = 403;
+
+  final Base64.Encoder encoder = Base64.getEncoder();
+
 
   private T data; //服务端数据
   private int code = OK; //状态码
@@ -63,7 +69,12 @@ public class ResultData<T> implements Serializable {
   }
 
   public ResultData isOk(T data) {
-    return new ResultData(data).status(OK).msg("success");
+    String value = JSON.toJSONString(data);
+    try {
+      return new ResultData(Base64Util.encode(value)).status(OK).msg("success");
+    }catch (Exception e) {
+      return new ResultData().status(OK).msg("success");
+    }
   }
 
   public ResultData msg(ResultCode resultCode) {

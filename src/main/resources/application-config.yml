@@ -32,6 +32,8 @@ mybatis:
   configuration:
     log-impl: ${mybatis.conf.log-impl}
     map-underscore-to-camel-case: ${mybatis.conf.map-underscore-to-camel-case}
+  mapper-locations: ${mybatis.conf.mapper-locations}
+  type-aliases-package: ${mybatis.conf.type-aliases-package}
 
 swagger:
   enable: ${swagger.open}

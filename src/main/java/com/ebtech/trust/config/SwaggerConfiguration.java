@@ -9,6 +9,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * swagger配置，生产环境下将enable设置为true
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {

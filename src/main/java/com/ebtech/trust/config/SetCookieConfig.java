@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
+ * cookie的config配置
+ *
  * @author andcool
  * @date 2020/7/2 10:11 上午
  */

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 解密数据，保存用户信息request
+ *
  * @author andcool
  * @date 2020/6/28 10:18 下午
  */

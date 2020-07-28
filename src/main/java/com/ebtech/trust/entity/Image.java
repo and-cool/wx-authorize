@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 轮播图实体
+ *
  * @author andcool
  * @date 2020/7/4 10:14 上午
  */
@@ -23,6 +25,8 @@ public class Image {
   private String src;
 
   private int isCarousel;
+
+  private int orders;
 
   private Date createAt;
 

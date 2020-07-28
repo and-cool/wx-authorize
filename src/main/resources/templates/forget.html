@@ -1,20 +1,20 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>光大信托直播课程小程序 - 内容管理系统</title>
+    <title>光大信托财富大讲堂 - 内容管理系统</title>
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/global.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/login.css}" type="text/css">
   </head>
   <body>
-    <div class="user-content">
-      <div class="user-login-main">
+    <div class="wxUser-content">
+      <div class="wxUser-login-main">
         <div class="center-header">
-          <h2>光大信托直播课程小程序</h2>
+          <h2>光大信托财富大讲堂</h2>
           <p>内容管理系统</p>
         </div>
-        <div class="user-body">
+        <div class="wxUser-body">
           <form class="layui-form">
             <div class="layui-form-item form-item">
               <label class="icon layui-icon-cellphone"></label>
@@ -33,11 +33,11 @@
             </div>
             <div class="layui-form-item form-item">
               <label class="icon layui-icon-password"></label>
-              <input type="text" name="password" required  lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input form-input">
+              <input type="password" name="password" required  lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input form-input">
             </div>
             <div class="layui-form-item form-item">
               <label class="icon layui-icon-password"></label>
-              <input type="text" name="confirm" required  lay-verify="required" placeholder="请再次输入新密码" autocomplete="off" class="layui-input form-input">
+              <input type="password" name="confirm" required  lay-verify="required" placeholder="请再次输入新密码" autocomplete="off" class="layui-input form-input">
             </div>
             <div class="layui-form-item form-item">
               <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="updateForm">确认修改密码</button>
@@ -51,8 +51,8 @@
     </div>
     <div>
       <footer class="global-footer">
-        <p>©2020 光大信托</p>
-        <p>光大信托</p>
+        <p>©2020 光大信托财富大讲堂</p>
+        <p>光大兴陇信托</p>
       </footer>
     </div>
     <script th:src="@{/layui/layui.js}"></script>

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
+ * 对接微信的config配置
  * @author andcool
  * @date 2020/6/28 8:52 下午
  */
